@@ -6,10 +6,11 @@ sequelize.sync({ alter: true });
 const models = {
     "logs": Models.Log,
     "tests": Models.Test,
-    "users": Models.User
+    "users": Models.User,
+    "roles": Models.Role
 }
 class DB {
-    async InsertToDatabase(Data,Table) {
+    async insertToDatabase(Data,Table) {
         try {
             var result;
             await models[Table].create(Data).then((output) => result = output
@@ -25,7 +26,7 @@ class DB {
         }
         catch (error) {
             console.error(error);
-            return 403;
+            return 400;
         }
     }
     async WakeUpDatabase() {
@@ -48,10 +49,10 @@ class DB {
         }
         catch (error) {
             console.log(error);
-            return 403;
+            return 400;
         }
     }
-    async FindFromDatabase(Data,Table)
+    async findFromDatabase(Data,Table)
     {
         try {
             const user = await models[Table].findOne({where: Data}).catch((error) => {
@@ -68,19 +69,14 @@ class DB {
             return 400;
         }
     }
-    async GetAllFromDatabase() {
+    async findAllFromDatabase(Table) {
         try {
-            var result;
-            var SQL_QUERY = "SELECT * FROM logs";
-            sequelize.query(SQL_QUERY, {
-                raw: true, //если для таблицы, к которой происходит обращение, не определена модель
-                type: Sequelize.QueryTypes.SELECT, //тип запроса: SELECT | INSERT | UPDATE | DELETE ...
-            }).then((output) => result = output);
-            return result.rows;
+            const records = await models[Table].findAll();
+            return records;
         }
         catch (error) {
             console.log(error);
-            return 403;
+            return 400;
         }
     }
 };

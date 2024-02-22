@@ -24,20 +24,10 @@ const Log = sequelize.define("logs", {
         updatedAt: false,
     }
 );
-const User = sequelize.define("users", {
-    username: {
+const Role = sequelize.define("roles", {
+    name: {
         type: DataTypes.STRING,
-        unique:true,
-        allowNull: false
-    },
-    // email: {
-    //     type: DataTypes.STRING,
-    //     unique: true,
-    //     isEmail: true, //checks for email format
-    //     allowNull: true
-    // },
-    password: {
-        type: DataTypes.STRING,
+        unique: true,
         allowNull: false
     },
     createdAt: {
@@ -50,12 +40,36 @@ const User = sequelize.define("users", {
         defaultValue: Sequelize.fn('now'),
         type: Sequelize.DATE
     }
-},
-    {
-        createdAt: false,
-        updatedAt: false,
+});
+const User = sequelize.define("users", {
+    username: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    role: {
+        type: DataTypes.STRING,
+        references: {
+            model: Role,
+            key: 'name'
+        },
+        allowNull: false
+    },
+    createdAt: {
+        allowNull: false,
+        defaultValue: Sequelize.fn('now'),
+        type: Sequelize.DATE
+    },
+    updatedAt: {
+        allowNull: false,
+        defaultValue: Sequelize.fn('now'),
+        type: Sequelize.DATE
     }
-);
+});
 const Test = sequelize.define("tests", {
     name: DataTypes.STRING,
     architecture: DataTypes.STRING,
@@ -84,5 +98,6 @@ const Test = sequelize.define("tests", {
 module.exports = {
     Test,
     Log,
-    User
+    User,
+    Role
 }

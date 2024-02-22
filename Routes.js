@@ -8,13 +8,13 @@ app.use(bodyParser.json());
 app.post("/insert", async function (req, res) {
     try {
         if (req.body["data"] && req.body["table"]) {
-            await db.InsertToDatabase(req.body["data"],req.body["table"]);
+            await db.insertToDatabase(req.body["data"],req.body["table"]);
             res.sendStatus(200);
         }
     } 
     catch (error) {
         console.log(error);
-        res.sendStatus(403);
+        res.send(400).json({message:"Not Found"});
     }
 })
 app.get("/wake_up_db", async function (req, res) {
@@ -24,17 +24,17 @@ app.get("/wake_up_db", async function (req, res) {
     }
     catch (error) {
         console.log(error);
-        res.sendStatus(403);
+        res.send(400).json({message:"Not Found"});
     }
     
 })
 app.post("/find", async function (req, res) {
     try {
         if (req.body["data"] && req.body["table"]) {
-            const user = await db.FindFromDatabase(req.body["data"],req.body["table"]);
-            if (user != 400 && user != null)
+            const record = await db.findFromDatabase(req.body["data"],req.body["table"]);
+            if (record != 400 && record != null)
             {
-                res.json({"user": user,"answer":"exists"});
+                res.json({"record": record,"answer":"exists"});
             }
             else
             {
@@ -44,7 +44,27 @@ app.post("/find", async function (req, res) {
     } 
     catch (error) {
         console.log(error);
-        res.sendStatus(400);
+        res.send(400).json({message:"Not Found"});
+    }
+})
+app.post("/find_all_records", async function (req,res) {
+    try {
+        if (req.body["table"]) {
+            const records = await db.findAllFromDatabase(req.body["table"]);
+            if (records != 400 && records.lenght > 0)
+            {
+                res.json({"records": records,"answer":"exists"});
+            }
+            else
+            {
+                res.json({"answer":"not exists"});
+            }
+        }
+    }
+    catch (error)
+    {
+        console.error(error);
+        res.send(400).json({message:"Not Found"});
     }
 })
 
