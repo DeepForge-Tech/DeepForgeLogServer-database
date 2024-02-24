@@ -69,5 +69,5 @@ app.post("/find_all_records", async function (req,res) {
 })
 
 app.listen(process.env.DB_SERVICE_PORT || 5001, async function () {
-    console.log("Database service is running.")
+    console.log("Database microservice service is running.")
 })
